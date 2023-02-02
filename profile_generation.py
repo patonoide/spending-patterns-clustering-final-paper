@@ -69,9 +69,6 @@ data_frame = pd.DataFrame(dataset_no_outliers, columns= data_frame.columns)
 # kmeans = sk.cluster.MeanShift(bandwidth=1.3)
 kmeans = KMeans(n_clusters=n_clusters, random_state=0)
 
-pca = PCA(10)
-
-pca_data = pca.fit_transform(dataset_no_outliers)
 
 
 kmeans_predicted_labels = kmeans.fit_predict(dataset_no_outliers)
@@ -125,45 +122,8 @@ for n, feature in enumerate(features.drop('cluster')):
 fig.suptitle('Feature distribution per cluster', fontsize=18, y=1)
 fig = plt.gcf()
 fig.set_size_inches(30, 40)
-fig.savefig("test.png", dpi=50)
+fig.savefig("visualization.png", dpi=50)
 # plt.tight_layout()
 # plt.show()
 
-u_labels = np.unique(kmeans_predicted_labels)
-
-pca = PCA(2)
-
-pca_data = pca.fit_transform(dataset_no_outliers)
-plt.clf()
-#plotting the results:
-for i in u_labels:
-    plt.scatter(pca_data[kmeans_predicted_labels == i , 0] , pca_data[kmeans_predicted_labels == i , 1])
-fig = plt.gcf()
-fig.set_size_inches(30, 30)
-fig.savefig("test_2.png", dpi=50)
-
-
-plt.clf()
-colors = ['#9EBD6E','#81a094','#775b59','#32161f', '#946846', '#E3C16F', '#fe938c', '#E6B89C','#EAD2AC',
-          '#DE9E36', '#4281A4','#37323E','#95818D'
-         ]
-
-X_mean = pd.concat([pd.DataFrame(data_frame.mean().drop('cluster'), columns=['mean']), 
-                   data_frame.groupby('cluster').mean().T], axis=1)
-
-X_dev_rel = X_mean.apply(lambda x: round((x-x['mean'])/x['mean'],2)*100, axis = 1)
-
-fig = plt.figure(figsize=(80,40), dpi=200)
-X_dev_rel.T.plot(kind='bar', 
-                       ax=fig.add_subplot(), 
-                       title="Cluster characteristics", 
-                       color=colors,
-                       xlabel="Cluster",
-                       ylabel="Deviation from overall mean in %"
-                      )
-plt.axhline(y=0, linewidth=1, ls='--', color='black')
-plt.legend(bbox_to_anchor=(1.04,1))
-fig.autofmt_xdate(rotation=0)
-# plt.tight_layout()
-fig.savefig("test_3.png", dpi=50)
 
